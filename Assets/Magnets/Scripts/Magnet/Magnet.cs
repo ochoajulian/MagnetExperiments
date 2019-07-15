@@ -13,6 +13,7 @@ public class Magnet : MonoBehaviour
     public float MagnetForce;
     public Pole MagneticPole;
     public Rigidbody RigidBody;
+    public bool Selected = false; // Added for raycasting
 
     // Use this for initialization
     void Start ()

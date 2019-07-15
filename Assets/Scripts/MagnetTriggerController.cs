@@ -9,25 +9,73 @@ public class MagnetTriggerController : MonoBehaviour
     public MeshRenderer rayGunModel;
     public List<Material> poleMaterials = new List<Material>();
     public float maxForce = 20f;
+    public Transform raycastOrigin; // using the gun as the origin for Raycasting
+    public LineRenderer line;
 
     private float rightTrigger;
     private bool northPole = true;
     private bool leftStickClick;
 
+    private List<GameObject> magneticObjects = new List<GameObject>(); //Using to temporarily store which block has been raycasting
 
     // Use this for initialization
     void Start()
     {
         NorthPole();
+        line = gameObject.GetComponent<LineRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Bit shift the index of the layer (8) to get a bit mask
+        int layerMask1 = 1 << 9;
+        int layerMask2 = 1 << 10;
+
+        int finalMask = layerMask1 | layerMask2;
+
+        // This would cast rays only against colliders in layer 8.
         //On Right Trigger, multiply rightTrigger value by maxForce.
         rightTrigger = Input.GetAxis("Oculus_CrossPlatform_SecondaryIndexTrigger");
         rightHand.MagnetForce = maxForce * rightTrigger;
 
+        if (rightHand.MagnetForce > 0.2f)
+        {
+            RaycastHit hit;
+            // Does the ray intersect any objects excluding the player layer
+            //If loop will only be true when hit objects on our layers.
+            if (Physics.Raycast(raycastOrigin.position, transform.TransformDirection(Vector3.forward), out hit, maxForce, finalMask))
+            {
+
+                //Debug.DrawRay(raycastOrigin.position, transform.TransformDirection(-Vector3.forward) * hit.distance, Color.yellow);
+                //Debug.Log("Did Hit");
+                Debug.Log(hit.collider.gameObject.name);
+
+                if (!hit.collider.gameObject.GetComponentInChildren<Magnet>().Selected)
+                {
+                    hit.collider.gameObject.GetComponentInChildren<Magnet>().Selected = true;
+                    hit.collider.gameObject.GetComponentInChildren<Magnet>().MagnetForce = 5;
+                    //Add this Magnet GameObject to magneticObjects List. 
+                    magneticObjects.Add(hit.collider.gameObject);
+                }
+                Debug.Log(magneticObjects[0]);
+                //line.SetPosition(0, raycastOrigin.position);
+                //line.SetPosition(1, hit.point);
+            }
+            
+        }
+        else
+        {
+            //A
+            for (int i = 0; i < magneticObjects.ToArray().Length; i++)
+            {
+                magneticObjects[i].GetComponentInChildren<Magnet>().Selected = false;
+                magneticObjects[i].GetComponentInChildren<Magnet>().MagnetForce = 0;
+                magneticObjects[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
+                //Remove this Magnet GameObject from magneticObjects List. 
+                magneticObjects.Remove(magneticObjects[i]);
+            }
+        }
         //On Left Stick click, change magnet/material of Ray Gun to other pole.      
         leftStickClick = Input.GetButtonDown("Oculus_CrossPlatform_PrimaryThumbstick");
         if (leftStickClick && northPole)
@@ -38,6 +86,8 @@ public class MagnetTriggerController : MonoBehaviour
         {
             NorthPole();
         }
+
+
     }
 
     void NorthPole()

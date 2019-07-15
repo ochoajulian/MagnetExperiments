@@ -7,6 +7,8 @@ public class RangeIndicator : MonoBehaviour
     [Header("Set in Inspector")]
     public Sprite[] rangeImages = { };
     //public Material[] rangeMaterials = { };
+    public float forceMultiplier = 5f;
+    public MagnetTriggerController magnetTriggerController;
 
     bool xButton, yButton;
     int rangeCounter = 1;
@@ -18,6 +20,7 @@ public class RangeIndicator : MonoBehaviour
     {
         rangeCounter = 1;
         spriteRenderer = GetComponent<SpriteRenderer>();
+        //magnetTriggerController = GetComponent<MagnetTriggerController>();
         genericColor.a = .5f;
         spriteRenderer.color = genericColor;
 
@@ -50,6 +53,8 @@ public class RangeIndicator : MonoBehaviour
             }
         }
         spriteRenderer.sprite = rangeImages[rangeCounter];
+        //maxForce in MagTrigCont. is reset depending on range counter and current forceMultiplier.
+        magnetTriggerController.maxForce = (rangeCounter + 1) * forceMultiplier;
         //spriteRenderer.material = rangeMaterials[rangeCounter];
         //GetComponent<SpriteRenderer>().color.a.
     }
