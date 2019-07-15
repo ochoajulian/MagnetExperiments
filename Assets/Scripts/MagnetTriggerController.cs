@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MagnetTriggerController : MonoBehaviour
 {
+    [Header("Set in Inspector")]
     public Magnet rightHand;
     public MeshRenderer rayGunModel;
     public List<Material> poleMaterials = new List<Material>();
