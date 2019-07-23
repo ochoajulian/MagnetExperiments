@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +11,8 @@ public class MagnetTriggerController : MonoBehaviour
     public List<Material> poleMaterials = new List<Material>();
     public float maxForce = 20f;
     public Transform raycastOrigin; // using the gun as the origin for Raycasting
-    public LineRenderer line;
+    public AudioClip shootingAudio;
+    //public LineRenderer line;
 
     private float rightTrigger;
     private bool northPole = true;
@@ -22,12 +24,13 @@ public class MagnetTriggerController : MonoBehaviour
     void Start()
     {
         NorthPole();
-        line = gameObject.GetComponent<LineRenderer>();
+        //line = gameObject.GetComponent<LineRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
+
         // Bit shift the index of the layer (8) to get a bit mask
         int layerMask1 = 1 << 9;
         int layerMask2 = 1 << 10;
@@ -44,25 +47,30 @@ public class MagnetTriggerController : MonoBehaviour
             RaycastHit hit;
             // Does the ray intersect any objects excluding the player layer
             //If loop will only be true when hit objects on our layers.
-            if (Physics.Raycast(raycastOrigin.position, transform.TransformDirection(Vector3.forward), out hit, maxForce, finalMask))
+            if (Physics.Raycast(raycastOrigin.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, finalMask))
             {
-
-                //Debug.DrawRay(raycastOrigin.position, transform.TransformDirection(-Vector3.forward) * hit.distance, Color.yellow);
-                //Debug.Log("Did Hit");
-                Debug.Log(hit.collider.gameObject.name);
-
-                if (!hit.collider.gameObject.GetComponentInChildren<Magnet>().Selected)
+                Debug.Log("Raycasting");
+                Debug.DrawRay(raycastOrigin.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+                if (hit.collider.tag == "Magnet")
                 {
-                    hit.collider.gameObject.GetComponentInChildren<Magnet>().Selected = true;
-                    hit.collider.gameObject.GetComponentInChildren<Magnet>().MagnetForce = 5;
-                    //Add this Magnet GameObject to magneticObjects List. 
-                    magneticObjects.Add(hit.collider.gameObject);
+
+                    
+                    Debug.Log("Did Hit");
+                    Debug.Log(hit.collider.gameObject.name);
+
+                    if (!hit.collider.gameObject.GetComponentInChildren<Magnet>().Selected)
+                    {
+                        hit.collider.gameObject.GetComponentInChildren<Magnet>().Selected = true;
+                        hit.collider.gameObject.GetComponentInChildren<Magnet>().MagnetForce = 5;
+                        //Add this Magnet GameObject to magneticObjects List. 
+                        magneticObjects.Add(hit.collider.gameObject);
+                    }
+                    //Debug.Log(magneticObjects[0]);
+                    //line.SetPosition(0, raycastOrigin.position);
+                    //line.SetPosition(1, hit.point);
                 }
-                Debug.Log(magneticObjects[0]);
-                //line.SetPosition(0, raycastOrigin.position);
-                //line.SetPosition(1, hit.point);
             }
-            
+
         }
         else
         {
@@ -76,6 +84,8 @@ public class MagnetTriggerController : MonoBehaviour
                 magneticObjects.Remove(magneticObjects[i]);
             }
         }
+
+
         //On Left Stick click, change magnet/material of Ray Gun to other pole.      
         leftStickClick = Input.GetButtonDown("Oculus_CrossPlatform_PrimaryThumbstick");
         if (leftStickClick && northPole)
@@ -86,9 +96,8 @@ public class MagnetTriggerController : MonoBehaviour
         {
             NorthPole();
         }
-
-
     }
+
 
     void NorthPole()
     {
@@ -111,4 +120,10 @@ public class MagnetTriggerController : MonoBehaviour
         rayGunModel.material = poleMaterials[1];
 
     }
+
+   private void MagnetBeam()
+    {
+        
+    }
+
 }
