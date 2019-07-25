@@ -18,6 +18,7 @@ public class VibrationManager : MonoBehaviour
     // Update is called once per frame
     public void TriggerVibration(AudioClip vibrationAudio, OVRInput.Controller controller)
     {
+
         OVRHapticsClip clip = new OVRHapticsClip(vibrationAudio);
 
         if (controller == OVRInput.Controller.LTouch)

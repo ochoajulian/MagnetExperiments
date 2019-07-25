@@ -54,7 +54,6 @@ public class MagnetTriggerController : MonoBehaviour
                 if (hit.collider.tag == "Magnet")
                 {
 
-                    
                     Debug.Log("Did Hit");
                     Debug.Log(hit.collider.gameObject.name);
 
@@ -64,6 +63,9 @@ public class MagnetTriggerController : MonoBehaviour
                         hit.collider.gameObject.GetComponentInChildren<Magnet>().MagnetForce = 5;
                         //Add this Magnet GameObject to magneticObjects List. 
                         magneticObjects.Add(hit.collider.gameObject);
+
+                        //Play the named clip and access it from the SFXManager class
+                        FindObjectOfType<SFXManager>().Play("MagnetGun");
                     }
                     //Debug.Log(magneticObjects[0]);
                     //line.SetPosition(0, raycastOrigin.position);
@@ -78,10 +80,13 @@ public class MagnetTriggerController : MonoBehaviour
             for (int i = 0; i < magneticObjects.ToArray().Length; i++)
             {
                 magneticObjects[i].GetComponentInChildren<Magnet>().Selected = false;
+                //Gives problems when OnTriggerEnter is called in MagnetForceController.cs...
                 magneticObjects[i].GetComponentInChildren<Magnet>().MagnetForce = 0;
                 magneticObjects[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
                 //Remove this Magnet GameObject from magneticObjects List. 
                 magneticObjects.Remove(magneticObjects[i]);
+                //Stop Audio Source(MagnetGun)
+                FindObjectOfType<SFXManager>().Stop("MagnetGun");
             }
         }
 
@@ -118,7 +123,6 @@ public class MagnetTriggerController : MonoBehaviour
         //Debug.Log("South Pole");
         //Change Material
         rayGunModel.material = poleMaterials[1];
-
     }
 
    private void MagnetBeam()
