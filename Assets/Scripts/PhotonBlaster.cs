@@ -29,6 +29,7 @@ public class PhotonBlaster : MonoBehaviour
         if (rightTrigger >= triggerPercentage && !isPressed)
         {
             isPressed = true;
+            FindObjectOfType<SFXManager>().Play("PhotonBlaster");
             GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity) as GameObject;
             projectile.GetComponent<Rigidbody>().velocity = -transform.forward * projectileSpeed;
             VibrationManager.singleton.TriggerVibration(shootingAudio, OVRInput.Controller.RTouch);

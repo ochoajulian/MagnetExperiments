@@ -7,6 +7,8 @@ public class GunController : MonoBehaviour
     [Header("Set in Inspector")]
     public int currentGun;
     public GameObject[] guns;
+    //Referenced in MTC.cs
+    public static bool isMagnetGun;
 
     bool bButton, aButton;
 
@@ -14,6 +16,7 @@ public class GunController : MonoBehaviour
     void Start()
     {
         changeGun(0);
+        isMagnetGun = true;
     }
 
     // Update is called once per frame
@@ -30,10 +33,12 @@ public class GunController : MonoBehaviour
         else if (bButton)
         {
             changeGun(0);
+            isMagnetGun = true;
         }
         else if (aButton)
         {
             changeGun(1);
+            isMagnetGun = false;
         }
     }
 

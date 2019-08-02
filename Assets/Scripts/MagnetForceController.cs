@@ -13,7 +13,7 @@ public class MagnetForceController : MonoBehaviour
         bridge.SetActive(false);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Magnet")
         {

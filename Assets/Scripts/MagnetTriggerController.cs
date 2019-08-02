@@ -42,7 +42,8 @@ public class MagnetTriggerController : MonoBehaviour
         rightTrigger = Input.GetAxis("Oculus_CrossPlatform_SecondaryIndexTrigger");
         rightHand.MagnetForce = maxForce * rightTrigger;
 
-        if (rightHand.MagnetForce > 0.2f)
+        //If isMagnetGun, allow MagnetForce
+        if (rightHand.MagnetForce > 0.2f && GunController.isMagnetGun)
         {
             RaycastHit hit;
             // Does the ray intersect any objects excluding the player layer
@@ -125,9 +126,9 @@ public class MagnetTriggerController : MonoBehaviour
         rayGunModel.material = poleMaterials[1];
     }
 
-   private void MagnetBeam()
+    private void MagnetBeam()
     {
-        
+
     }
 
 }

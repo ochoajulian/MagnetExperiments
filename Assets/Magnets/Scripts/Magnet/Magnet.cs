@@ -16,14 +16,14 @@ public class Magnet : MonoBehaviour
     public bool Selected = false; // Added for raycasting
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-		
-	}
-    
+
+    }
+
 }
